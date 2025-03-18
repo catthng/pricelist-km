@@ -1,16 +1,19 @@
-// Utility: safely parse strings with commas, e.g. "125,000" -> 125000
+/********************************************
+ * Utility functions
+ ********************************************/
 function toNumber(str) {
     if (!str) return 0;
     return parseInt(str.replace(/,/g, ""), 10) || 0;
   }
   
-  // Utility: format numbers as ###,### (no decimals)
   function formatNumber(value) {
     const numericValue = toNumber(value);
     return numericValue.toLocaleString('en-US', { maximumFractionDigits: 0 });
   }
   
-  // Global references
+  /********************************************
+   * DOM references
+   ********************************************/
   const statusMessage = document.getElementById("status-message");
   const dataInfo = document.getElementById("data-info");
   const searchInput = document.getElementById("search-input");
@@ -19,21 +22,23 @@ function toNumber(str) {
   const barcodeBtn = document.getElementById("barcode-btn");
   const scannerModal = document.getElementById("scanner-modal");
   const closeModal = document.getElementById("close-modal");
-  const cameraSelection = document.getElementById("cameraSelection");
   
+  /********************************************
+   * Load any existing localStorage data
+   ********************************************/
   let pricelistData = JSON.parse(localStorage.getItem("pricelistData") || "[]");
   let dataCount = localStorage.getItem("pricelistDataCount") || 0;
   let lastUpdated = localStorage.getItem("pricelistLastUpdated") || "N/A";
   
-  // Display how many items are loaded, last updated
   updateDataInfo(dataCount, lastUpdated);
   
-  // --- REFRESH FUNCTION (like admin.js) ---
+  /********************************************
+   * Refresh data (fetch from Google Sheets CSV)
+   ********************************************/
   refreshBtn.addEventListener("click", refreshData);
   
   function refreshData() {
     statusMessage.textContent = "Starting data refresh...";
-    
     const sheetUrl = "https://docs.google.com/spreadsheets/d/1hCqLjZ8KcOV8sR9Q65mltuUwYLcuGmKsuN2HZz5Ig1o/export?format=csv";
     
     fetch(sheetUrl)
@@ -59,7 +64,6 @@ function toNumber(str) {
   
         statusMessage.textContent = `Data refreshed successfully. ${rowCount} rows loaded on ${nowString}.`;
   
-        // Update global counters + UI
         dataCount = rowCount;
         lastUpdated = nowString;
         updateDataInfo(dataCount, lastUpdated);
@@ -73,7 +77,9 @@ function toNumber(str) {
     dataInfo.textContent = `${count} items loaded. Last updated: ${updatedTime}`;
   }
   
-  // --- SEARCH FUNCTION ---
+  /********************************************
+   * Search Functionality
+   ********************************************/
   searchInput.addEventListener("input", (e) => {
     performSearch(e.target.value);
   });
@@ -136,87 +142,70 @@ function toNumber(str) {
     });
   }
   
-  // --- BARCODE SCANNER SETUP WITH CAMERA SELECTION ---
-  let html5QrcodeScanner;
-  let selectedCameraId = localStorage.getItem("preferredCameraId") || null;
-  
-  // Populate camera dropdown
-  Html5Qrcode.getCameras()
-    .then(devices => {
-      if (!devices || devices.length === 0) {
-        cameraSelection.innerHTML = "<option>No cameras found</option>";
-        return;
-      }
-      cameraSelection.innerHTML = ""; // Clear old
-      devices.forEach(device => {
-        const option = document.createElement("option");
-        option.value = device.id;
-        option.text = device.label || `Camera ${cameraSelection.length + 1}`;
-        cameraSelection.appendChild(option);
-      });
-      // If we have a previously saved camera ID, select it if it exists
-      if (selectedCameraId) {
-        cameraSelection.value = selectedCameraId;
-      }
-    })
-    .catch(err => {
-      console.warn("Error getting cameras:", err);
-      cameraSelection.innerHTML = "<option>Error loading cameras</option>";
-    });
-  
-  // If user changes the camera, store preference
-  cameraSelection.addEventListener("change", (e) => {
-    selectedCameraId = e.target.value;
-    localStorage.setItem("preferredCameraId", selectedCameraId);
-  });
-  
+  /********************************************
+   * Quagga2 Barcode Scanner Setup
+   ********************************************/
   barcodeBtn.addEventListener("click", () => {
+    // Show modal
     scannerModal.style.display = "block";
     
-    // Initialize if not done yet
-    if (!html5QrcodeScanner) {
-      html5QrcodeScanner = new Html5Qrcode("reader");
-    }
-    
-    // Attempt advanced config
-    const config = {
-      fps: 10,
-      qrbox: { width: 250, height: 150 },
-      // If you want to try a zoom approach, you can add videoConstraints, but it may be ignored on some devices
-      videoConstraints: {
-        deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined,
-        facingMode: "environment"
-        // you can attempt zoom here if your device supports it: zoom: 2
-      }
-    };
-    
-    html5QrcodeScanner.start(
-      selectedCameraId ? { deviceId: { exact: selectedCameraId } } : { facingMode: "environment" },
-      config,
-      (decodedText) => {
-        // On successful scan
-        searchInput.value = decodedText;
-        performSearch(decodedText);
-        stopScanner();
+    // Initialize Quagga2
+    Quagga.init({
+      inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: document.querySelector("#scanner-container"), // The DOM element to show the camera feed
+        constraints: {
+          facingMode: "environment", // Use back camera if available
+          width: { min: 640 },
+          height: { min: 480 }
+        }
       },
-      (errorMessage) => {
-        // Optional: handle scan errors
-        console.warn("Scan error:", errorMessage);
+      locate: true, // try to locate the barcode in the image
+      decoder: {
+        // Add whichever barcode formats you expect to scan:
+        readers: [
+          "code_128_reader",
+          "ean_reader",
+          "ean_8_reader",
+          "upc_reader",
+          "upc_e_reader",
+          "code_39_reader",
+          "codabar_reader",
+          "i2of5_reader"
+        ]
       }
-    ).catch(err => {
-      console.error("Unable to start scanning.", err);
+    }, function(err) {
+      if (err) {
+        console.error("Quagga init error:", err);
+        return;
+      }
+      Quagga.start();
     });
+    
+    // On detected
+    Quagga.onDetected(onDetectedHandler);
   });
   
+  // Called whenever a barcode is detected
+  function onDetectedHandler(data) {
+    // data.codeResult.code is the scanned barcode text
+    const scannedCode = data.codeResult.code;
+    
+    // Stop scanning
+    stopScanner();
+    
+    // Put the code into the search input & run the search
+    searchInput.value = scannedCode;
+    performSearch(scannedCode);
+  }
+  
+  // Stop scanning & close modal
   closeModal.addEventListener("click", stopScanner);
   
   function stopScanner() {
-    if (html5QrcodeScanner) {
-      html5QrcodeScanner.stop().then(() => {
-        scannerModal.style.display = "none";
-      });
-    } else {
-      scannerModal.style.display = "none";
-    }
+    Quagga.stop();
+    Quagga.offDetected(onDetectedHandler);
+    scannerModal.style.display = "none";
   }
   
