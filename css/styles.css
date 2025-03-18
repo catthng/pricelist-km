@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  header, main {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #0070f3;
+    font-weight: bold;
+  }
+  
+  button {
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .search-container input {
+    flex: 1;
+    padding: 10px;
+    font-size: 1rem;
+  }
+  
+  .search-container button {
+    margin-left: 10px;
+  }
+  
+  /* Result styling */
+  .result-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  .result-item .line1 {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  .result-item .line2, .result-item .line3 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+  }
+  
+  /* Modal styles for barcode scanner */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+  }
+  
+  .close {
+    color: #aaa;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  

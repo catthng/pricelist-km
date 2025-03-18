@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Pricelist</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Pricelist</h1>
+  </header>
+  <main>
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Search by code, barcode, or name..." />
+      <button id="barcode-btn">Scan Barcode</button>
+    </div>
+    <div id="results"></div>
+  </main>
+  
+  <!-- Hidden modal for barcode scanning -->
+  <div id="scanner-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <div id="reader" style="width:300px;"></div>
+    </div>
+  </div>
+  
+  <!-- Load html5-qrcode from CDN -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="js/pricelist.js"></script>
+</body>
+</html>
