@@ -42,14 +42,16 @@ body {
     border-bottom: 1px solid #ddd;
     padding: 10px 0;
   }
-  .result-item .line1 {
+  
+  /* Make line1, line2, line3 the same smaller font size */
+  .result-item .line1,
+  .result-item .line2,
+  .result-item .line3 {
     font-size: 0.9rem;
     color: #555;
-  }
-  .result-item .line2, .result-item .line3 {
     display: flex;
     justify-content: space-between;
-    font-size: 0.95rem;
+    margin: 3px 0;
   }
   
   /* Modal styles for barcode scanner */

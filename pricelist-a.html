@@ -2,23 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- maximum-scale=1.0 to prevent iOS from zooming in/out automatically -->
+  <!-- Prevent iOS from auto-zooming -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Pricelist</title>
+  <title>Pricelist KM - Toto Bazaar 2024</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header>
-    <h1>Pricelist</h1>
+    <!-- Title + refresh button on the right side -->
+    <h1>
+      Pricelist KM - Toto Bazaar 2024
+      <button id="refresh-btn" style="float: right;">Refresh Database</button>
+    </h1>
   </header>
   <main>
-    <!-- Display how many rows are loaded, last updated, etc. -->
+    <!-- Show status or errors when refreshing -->
+    <p id="status-message" style="color: green; font-weight: bold;"></p>
+    
+    <!-- Show how many items are loaded, last updated, etc. -->
     <p id="data-info" style="font-weight: bold; color: #333;"></p>
     
+    <!-- Search bar + Barcode Scan button -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="Search by code, barcode, or name..." />
       <button id="barcode-btn">Scan Barcode</button>
     </div>
+    
+    <!-- Camera selection dropdown (optional, hidden if only one camera is found) -->
+    <div id="camera-selection-container" style="margin-bottom: 10px;">
+      <label for="cameraSelection">Camera:</label>
+      <select id="cameraSelection"></select>
+    </div>
+    
+    <!-- Search results area -->
     <div id="results"></div>
   </main>
   
@@ -26,13 +42,17 @@
   <div id="scanner-modal" class="modal">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
-      <!-- This div is where html5-qrcode will render the camera view -->
+      <!-- This is where html5-qrcode will render the camera view -->
       <div id="reader" style="width:300px;"></div>
     </div>
   </div>
   
+  <!-- Load PapaParse for CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <!-- Load html5-qrcode from CDN -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  
+  <!-- Pricelist logic -->
   <script src="js/pricelist.js"></script>
 </body>
 </html>
