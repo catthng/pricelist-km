@@ -49,7 +49,7 @@ button {
   margin: 3px 0;
 }
 
-/* Modal styling to cover full screen */
+/* Modal styling to cover full screen and center content */
 .modal {
   display: none; /* Hidden by default */
   position: fixed;
@@ -83,18 +83,20 @@ button {
   z-index: 10000;
 }
 
-/* Scanner container takes the full modal space */
+/* Scanner container takes full modal space */
 #scanner-container {
   width: 100%;
   height: 100%;
   background: #000;
 }
 
-/* NEW: Force Quagga2's video element to display fully and be centered */
+/* Style the video element inserted by Quagga2
+   to crop the top and bottom and show the center portion */
 #scanner-container video {
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   display: block;
   margin: auto;
 }
