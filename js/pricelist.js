@@ -131,7 +131,7 @@ function renderResults(results) {
  * Quagga2 Barcode Scanner Functionality
  ********************************************/
 barcodeBtn.addEventListener("click", () => {
-  // Show the modal (full-screen)
+  // Show the modal only when user clicks the button
   scannerModal.style.display = "flex";
   
   Quagga.init({
@@ -143,7 +143,7 @@ barcodeBtn.addEventListener("click", () => {
         facingMode: "environment",
         width: { min: 1280 },
         height: { min: 720 }
-        // Rely on the device’s default continuous autofocus.
+        // Using device’s default continuous autofocus.
       }
     },
     frequency: 3,  // Process 3 frames per second for improved accuracy
