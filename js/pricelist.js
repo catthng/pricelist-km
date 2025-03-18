@@ -149,21 +149,26 @@ function toNumber(str) {
     // Show modal
     scannerModal.style.display = "block";
     
-    // Initialize Quagga2
+    // Initialize Quagga2 with updated settings
     Quagga.init({
       inputStream: {
         name: "Live",
         type: "LiveStream",
         target: document.querySelector("#scanner-container"), // The DOM element to show the camera feed
         constraints: {
-          facingMode: "environment", // Use back camera if available
-          width: { min: 640 },
-          height: { min: 480 }
+          facingMode: "environment", // Use back camera
+          // Increase resolution to get more detail for small barcodes
+          width: { min: 1280 },
+          height: { min: 720 },
+          // Uncomment the following to request torch/flash if supported.
+          // Note: This may help in low-light, but it might be distracting.
+          // advanced: [{ torch: true }]
         }
       },
-      locate: true, // try to locate the barcode in the image
+      frequency: 5,  // Process 5 frames per second (lower can mean less CPU load, but might miss fast changes)
+      locate: true,  // Enable locating the barcode in the image (can improve accuracy by scanning the entire frame)
+      numOfWorkers: 4,  // Use 4 web workers to process frames in parallel; adjust if your device has more/less cores
       decoder: {
-        // Add whichever barcode formats you expect to scan:
         readers: [
           "code_128_reader",
           "ean_reader",
@@ -183,7 +188,7 @@ function toNumber(str) {
       Quagga.start();
     });
     
-    // On detected
+    // When a barcode is detected, call the onDetectedHandler
     Quagga.onDetected(onDetectedHandler);
   });
   
