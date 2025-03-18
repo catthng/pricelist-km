@@ -37,6 +37,7 @@ button {
 .result-item {
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
+  cursor: pointer;
 }
 
 .result-item .line1,
@@ -90,8 +91,7 @@ button {
   background: #000;
 }
 
-/* Style the video element inserted by Quagga2
-   to crop the top and bottom and show the center portion */
+/* Force Quagga2's video element to fill container and show centered middle area */
 #scanner-container video {
   width: 100% !important;
   height: 100% !important;
@@ -99,4 +99,35 @@ button {
   object-position: center;
   display: block;
   margin: auto;
+}
+
+/* Detail modal styling (pop-up style) */
+.detail-content {
+  width: 90%;
+  max-width: 400px;
+  height: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+}
+
+#detail-modal {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#detail-container h2 {
+  margin-top: 0;
+}
+
+#detail-container p {
+  margin: 10px 0;
+}
+
+#detail-container .net-price {
+  color: green;
+  font-weight: bold;
 }

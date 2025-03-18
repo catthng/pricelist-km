@@ -23,6 +23,11 @@ const barcodeBtn = document.getElementById("barcode-btn");
 const scannerModal = document.getElementById("scanner-modal");
 const closeModal = document.getElementById("close-modal");
 
+// Detail modal references
+const detailModal = document.getElementById("detail-modal");
+const closeDetailModal = document.getElementById("close-detail-modal");
+const detailContainer = document.getElementById("detail-container");
+
 /********************************************
  * Data Initialization
  ********************************************/
@@ -123,15 +128,46 @@ function renderResults(results) {
     div.appendChild(row1);
     div.appendChild(row2);
     div.appendChild(row3);
+    
+    // When a result is clicked, show the detail pop-up
+    div.addEventListener("click", () => {
+      showDetail(item);
+    });
+    
     resultsDiv.appendChild(div);
   });
 }
 
 /********************************************
+ * Detail Modal Functionality
+ ********************************************/
+function showDetail(item) {
+  const retail = formatNumber(item["Retail Price"]);
+  const net = formatNumber(item["Net Price"]);
+  const discountRaw = toNumber(item["Discount %"]);
+  const discount = discountRaw.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  
+  detailContainer.innerHTML = `
+    <h2>${item["Item Name"] || ""}</h2>
+    <p><strong>Item Code:</strong> ${item["Item Code"] || ""}</p>
+    <p><strong>Barcode:</strong> ${item["Barcode"] || ""}</p>
+    <p><strong>Retail Price:</strong> ${retail}</p>
+    <p><strong>Discount %:</strong> ${discount}%</p>
+    <p><strong>Net Price:</strong> <span class="net-price">${net}</span></p>
+  `;
+  
+  detailModal.style.display = "flex";
+}
+
+closeDetailModal.addEventListener("click", () => {
+  detailModal.style.display = "none";
+});
+
+/********************************************
  * Quagga2 Barcode Scanner Functionality
  ********************************************/
 barcodeBtn.addEventListener("click", () => {
-  // Show the modal only when user clicks the button
+  // Show the scanner modal only when the user clicks the button
   scannerModal.style.display = "flex";
   
   Quagga.init({
@@ -143,10 +179,9 @@ barcodeBtn.addEventListener("click", () => {
         facingMode: "environment",
         width: { min: 1280 },
         height: { min: 720 }
-        // Using device’s default continuous autofocus.
       }
     },
-    frequency: 3,  // Process 3 frames per second for improved accuracy
+    frequency: 3,  // Process 3 frames per second
     locate: true,
     numOfWorkers: 4,
     decoder: {
