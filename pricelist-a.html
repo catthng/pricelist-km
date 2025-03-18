@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- maximum-scale=1.0 to prevent iOS from zooming in/out automatically -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Pricelist</title>
   <link rel="stylesheet" href="css/styles.css" />
@@ -11,6 +12,9 @@
     <h1>Pricelist</h1>
   </header>
   <main>
+    <!-- Display how many rows are loaded, last updated, etc. -->
+    <p id="data-info" style="font-weight: bold; color: #333;"></p>
+    
     <div class="search-container">
       <input type="text" id="search-input" placeholder="Search by code, barcode, or name..." />
       <button id="barcode-btn">Scan Barcode</button>
@@ -22,6 +26,7 @@
   <div id="scanner-modal" class="modal">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
+      <!-- This div is where html5-qrcode will render the camera view -->
       <div id="reader" style="width:300px;"></div>
     </div>
   </div>
