@@ -195,9 +195,9 @@ barcodeBtn.addEventListener("click", () => {
         height: { min: 720 }
       }
     },
-    frequency: 3,  // Process 3 frames per second
+    frequency: 5,  // Process 3 frames per second
     locate: true,
-    numOfWorkers: 4,
+    numOfWorkers: 5,
     decoder: {
       readers: [
         "code_128_reader",
