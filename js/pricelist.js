@@ -123,7 +123,7 @@ function renderResults(results) {
     
     const row3 = document.createElement("div");
     row3.classList.add("line3");
-    row3.textContent = `Retail: ${retail} | Disc: ${discount}% | Net: ${net}`;
+    row3.textContent = `Retail: ${retail} | Disc : ${discount}% | Net: ${net}`;
     
     div.appendChild(row1);
     div.appendChild(row2);
@@ -146,14 +146,22 @@ function showDetail(item) {
   const net = formatNumber(item["Net Price"]);
   const discountRaw = toNumber(item["Discount %"]);
   const discount = discountRaw.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  const imageUrl = `https://filedn.eu/lOjLpzJofleJiC3OIhcsQL0/ERPThumbnails/${item["Item Code"]}.jpg`;
   
   detailContainer.innerHTML = `
-    <h2>${item["Item Name"] || ""}</h2>
-    <p><strong>Item Code:</strong> ${item["Item Code"] || ""}</p>
-    <p><strong>Barcode:</strong> ${item["Barcode"] || ""}</p>
-    <p><strong>Retail Price:</strong> ${retail}</p>
-    <p><strong>Discount %:</strong> ${discount}%</p>
-    <p><strong>Net Price:</strong> <span class="net-price">${net}</span></p>
+    <div class="detail-info">
+      <div class="detail-image">
+        <img src="${imageUrl}" alt="${item["Item Name"]} Thumbnail" />
+      </div>
+      <div class="detail-text">
+        <h2>${item["Item Name"] || ""}</h2>
+        <p><strong>Item Code:</strong> ${item["Item Code"] || ""}</p>
+        <p><strong>Barcode:</strong> ${item["Barcode"] || ""}</p>
+        <p><strong>Retail Price:</strong> ${retail}</p>
+        <p><strong>Disc :</strong> ${discount}%</p>
+        <p><strong>Net Price:</strong> <span class="net-price">${net}</span></p>
+      </div>
+    </div>
   `;
   
   detailModal.style.display = "flex";
@@ -166,9 +174,15 @@ closeDetailModal.addEventListener("click", () => {
 /********************************************
  * Quagga2 Barcode Scanner Functionality
  ********************************************/
+// Guard variable to ensure the scanner doesn't auto-start
+let scannerInitialized = false;
+
 barcodeBtn.addEventListener("click", () => {
-  // Show the scanner modal only when the user clicks the button
+  if (scannerInitialized) return; // Prevent re-initialization if already running
+
+  // Show the scanner modal only when user clicks the button
   scannerModal.style.display = "flex";
+  scannerInitialized = true;
   
   Quagga.init({
     inputStream: {
@@ -199,6 +213,7 @@ barcodeBtn.addEventListener("click", () => {
   }, function(err) {
     if (err) {
       console.error("Quagga init error:", err);
+      scannerInitialized = false;
       return;
     }
     Quagga.start();
@@ -220,4 +235,5 @@ function stopScanner() {
   Quagga.stop();
   Quagga.offDetected(onDetectedHandler);
   scannerModal.style.display = "none";
+  scannerInitialized = false;
 }

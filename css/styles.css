@@ -119,15 +119,23 @@ button {
   justify-content: center;
 }
 
-#detail-container h2 {
+/* Arrange detail info as flex row */
+.detail-info {
+  display: flex;
+  align-items: center;
+}
+.detail-image img {
+  width: 100px;
+  height: auto;
+  margin-right: 10px;
+}
+.detail-text h2 {
   margin-top: 0;
 }
-
-#detail-container p {
+.detail-text p {
   margin: 10px 0;
 }
-
-#detail-container .net-price {
+.detail-text .net-price {
   color: green;
   font-weight: bold;
 }
