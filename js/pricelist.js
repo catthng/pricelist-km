@@ -146,27 +146,25 @@ function toNumber(str) {
    * Quagga2 Barcode Scanner Setup
    ********************************************/
   barcodeBtn.addEventListener("click", () => {
-    // Show the modal with the scanner
+    // Show the modal
     scannerModal.style.display = "block";
     
     Quagga.init({
       inputStream: {
         name: "Live",
         type: "LiveStream",
-        target: document.querySelector("#scanner-container"), // Element where the feed is shown
+        target: document.querySelector("#scanner-container"),
         constraints: {
-          facingMode: "environment", // Always use back camera
-          width: { min: 1280 },      // Request high resolution (detail for small barcodes)
+          facingMode: "environment", // use the back camera
+          width: { min: 1280 },
           height: { min: 720 },
-          // Advanced constraints (attempt continuous focus)
-          advanced: [{ focusMode: "continuous" }]
-          // You could also experiment with:
-          // advanced: [{ torch: true }]  // Turn on flash if low-light (can be intrusive)
+          // Request manual focus. Note: Not all browsers support this.
+          advanced: [{ focusMode: "manual", focusDistance: 0 }]
         }
       },
-      frequency: 5,       // Process 5 frames per second (helps reduce CPU load and gives decoder more time per frame)
-      locate: true,       // Enable barcode localization within the entire frame for improved accuracy
-      numOfWorkers: 4,    // Number of web workers for parallel processing (adjust based on device capability)
+      frequency: 5,       // Process 5 frames per second
+      locate: true,       // Actively locate the barcode in the image
+      numOfWorkers: 4,    // Use 4 web workers for parallel processing
       decoder: {
         readers: [
           "code_128_reader",
@@ -185,31 +183,51 @@ function toNumber(str) {
         return;
       }
       Quagga.start();
+      // Start periodic focus adjustment
+      startFocusAdjustment();
     });
     
     Quagga.onDetected(onDetectedHandler);
   });
   
+  // Periodically try to enforce focus constraints
+  let focusIntervalId;
+  function startFocusAdjustment() {
+    // Clear any existing interval
+    if (focusIntervalId) clearInterval(focusIntervalId);
+    
+    focusIntervalId = setInterval(() => {
+      const track = Quagga.cameraAccess.getActiveTrack();
+      if (track && track.applyConstraints) {
+        track.applyConstraints({
+          advanced: [{ focusMode: "manual", focusDistance: 0 }]
+        }).catch(e => {
+          console.warn("Focus adjustment not supported:", e);
+        });
+      }
+    }, 500); // every 500ms
+  }
   
-  // Called whenever a barcode is detected
+  function stopFocusAdjustment() {
+    if (focusIntervalId) {
+      clearInterval(focusIntervalId);
+      focusIntervalId = null;
+    }
+  }
+  
+  // Called when a barcode is detected
   function onDetectedHandler(data) {
-    // data.codeResult.code is the scanned barcode text
     const scannedCode = data.codeResult.code;
-    
-    // Stop scanning
     stopScanner();
-    
-    // Put the code into the search input & run the search
     searchInput.value = scannedCode;
     performSearch(scannedCode);
   }
   
-  // Stop scanning & close modal
   closeModal.addEventListener("click", stopScanner);
   
   function stopScanner() {
+    stopFocusAdjustment();
     Quagga.stop();
     Quagga.offDetected(onDetectedHandler);
     scannerModal.style.display = "none";
   }
-  
