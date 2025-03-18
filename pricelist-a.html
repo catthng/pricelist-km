@@ -2,49 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Ensure proper scaling on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>KM Toto Bazaar 25</title>
+  <title>KM TOTO</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header>
-    <!-- Title + refresh button on the right side -->
+    <!-- Title with Refresh button on the right -->
     <h1>
-      KM Toto Bazaar 25v1
+      KM Toto 25v2
       <button id="refresh-btn" style="float: right;">Refresh Database</button>
     </h1>
   </header>
   <main>
-    <!-- Show status or errors when refreshing -->
+    <!-- Status messages and data info -->
     <p id="status-message" style="color: green; font-weight: bold;"></p>
-
-    <!-- Show how many items are loaded, last updated, etc. -->
     <p id="data-info" style="font-weight: bold; color: #333;"></p>
     
-    <!-- Search bar + Barcode Scan button -->
+    <!-- Search bar and Scan Barcode button -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="Search by code, barcode, or name..." />
       <button id="barcode-btn">Scan Barcode</button>
     </div>
-
+    
     <!-- Search results area -->
     <div id="results"></div>
   </main>
   
-  <!-- Hidden modal for barcode scanning -->
+  <!-- Modal for barcode scanning -->
   <div id="scanner-modal" class="modal">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
-      <!-- Quagga2 will attach the live camera feed here -->
-      <div id="scanner-container" style="width: 320px; height: 240px; margin: 0 auto;"></div>
+      <!-- The camera feed will be rendered here -->
+      <div id="scanner-container"></div>
     </div>
   </div>
-
-  <!-- PapaParse for CSV parsing -->
+  
+  <!-- Load external libraries -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <!-- Quagga2 from unpkg -->
   <script src="https://unpkg.com/@ericblade/quagga2/dist/quagga.js"></script>
-  <!-- Pricelist logic (search + Quagga2 scanning) -->
+  
+  <!-- Pricelist logic -->
   <script src="js/pricelist.js"></script>
 </body>
 </html>
