@@ -146,28 +146,27 @@ function toNumber(str) {
    * Quagga2 Barcode Scanner Setup
    ********************************************/
   barcodeBtn.addEventListener("click", () => {
-    // Show modal
+    // Show the modal with the scanner
     scannerModal.style.display = "block";
     
-    // Initialize Quagga2 with updated settings
     Quagga.init({
       inputStream: {
         name: "Live",
         type: "LiveStream",
-        target: document.querySelector("#scanner-container"), // The DOM element to show the camera feed
+        target: document.querySelector("#scanner-container"), // Element where the feed is shown
         constraints: {
-          facingMode: "environment", // Use back camera
-          // Increase resolution to get more detail for small barcodes
-          width: { min: 1280 },
+          facingMode: "environment", // Always use back camera
+          width: { min: 1280 },      // Request high resolution (detail for small barcodes)
           height: { min: 720 },
-          // Uncomment the following to request torch/flash if supported.
-          // Note: This may help in low-light, but it might be distracting.
-          // advanced: [{ torch: true }]
+          // Advanced constraints (attempt continuous focus)
+          advanced: [{ focusMode: "continuous" }]
+          // You could also experiment with:
+          // advanced: [{ torch: true }]  // Turn on flash if low-light (can be intrusive)
         }
       },
-      frequency: 5,  // Process 5 frames per second (lower can mean less CPU load, but might miss fast changes)
-      locate: true,  // Enable locating the barcode in the image (can improve accuracy by scanning the entire frame)
-      numOfWorkers: 4,  // Use 4 web workers to process frames in parallel; adjust if your device has more/less cores
+      frequency: 5,       // Process 5 frames per second (helps reduce CPU load and gives decoder more time per frame)
+      locate: true,       // Enable barcode localization within the entire frame for improved accuracy
+      numOfWorkers: 4,    // Number of web workers for parallel processing (adjust based on device capability)
       decoder: {
         readers: [
           "code_128_reader",
@@ -188,9 +187,9 @@ function toNumber(str) {
       Quagga.start();
     });
     
-    // When a barcode is detected, call the onDetectedHandler
     Quagga.onDetected(onDetectedHandler);
   });
+  
   
   // Called whenever a barcode is detected
   function onDetectedHandler(data) {

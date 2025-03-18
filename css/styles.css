@@ -69,12 +69,13 @@ body {
   
   .modal-content {
     background-color: #fff;
-    margin: 10% auto;
+    margin: 20% auto;
     padding: 20px;
-    width: 90%;
-    max-width: 400px;
+    width: 60%;       /* Adjust as needed (e.g., 40% for smaller modal) */
+    max-width: 300px; /* Maximum width to keep it compact */
     position: relative;
   }
+  
   
   .close {
     color: #aaa;
