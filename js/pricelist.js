@@ -32,6 +32,10 @@ let lastUpdated = localStorage.getItem("pricelistLastUpdated") || "N/A";
 
 updateDataInfo(dataCount, lastUpdated);
 
+function updateDataInfo(count, updatedTime) {
+  dataInfo.textContent = `${count} items loaded. Last updated: ${updatedTime}`;
+}
+
 /********************************************
  * Refresh Data Functionality
  ********************************************/
@@ -67,10 +71,6 @@ function refreshData() {
     .catch(error => {
       statusMessage.textContent = "Error refreshing data: " + error;
     });
-}
-
-function updateDataInfo(count, updatedTime) {
-  dataInfo.textContent = `${count} items loaded. Last updated: ${updatedTime}`;
 }
 
 /********************************************
@@ -131,7 +131,7 @@ function renderResults(results) {
  * Quagga2 Barcode Scanner Functionality
  ********************************************/
 barcodeBtn.addEventListener("click", () => {
-  // Show the modal (using flex centering)
+  // Show the modal (which now covers the full screen)
   scannerModal.style.display = "flex";
   
   Quagga.init({
@@ -142,12 +142,11 @@ barcodeBtn.addEventListener("click", () => {
       constraints: {
         facingMode: "environment",
         width: { min: 1280 },
-        height: { min: 720 },
-        // Request manual focus at the closest distance.
-        advanced: [{ focusMode: "manual", focusDistance: 0 }]
+        height: { min: 720 }
+        // We rely on the device's default continuous autofocus.
       }
     },
-    frequency: 5,
+    frequency: 3,  // Process 3 frames per second for improved accuracy
     locate: true,
     numOfWorkers: 4,
     decoder: {
@@ -168,33 +167,10 @@ barcodeBtn.addEventListener("click", () => {
       return;
     }
     Quagga.start();
-    startFocusAdjustment();
   });
   
   Quagga.onDetected(onDetectedHandler);
 });
-
-let focusIntervalId;
-function startFocusAdjustment() {
-  if (focusIntervalId) clearInterval(focusIntervalId);
-  focusIntervalId = setInterval(() => {
-    const track = Quagga.cameraAccess.getActiveTrack();
-    if (track && track.applyConstraints) {
-      track.applyConstraints({
-        advanced: [{ focusMode: "manual", focusDistance: 0 }]
-      }).catch(e => {
-        console.warn("Focus adjustment not supported:", e);
-      });
-    }
-  }, 500);
-}
-
-function stopFocusAdjustment() {
-  if (focusIntervalId) {
-    clearInterval(focusIntervalId);
-    focusIntervalId = null;
-  }
-}
 
 function onDetectedHandler(data) {
   const scannedCode = data.codeResult.code;
@@ -206,7 +182,6 @@ function onDetectedHandler(data) {
 closeModal.addEventListener("click", stopScanner);
 
 function stopScanner() {
-  stopFocusAdjustment();
   Quagga.stop();
   Quagga.offDetected(onDetectedHandler);
   scannerModal.style.display = "none";
