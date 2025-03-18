@@ -146,20 +146,21 @@ function showDetail(item) {
   const net = formatNumber(item["Net Price"]);
   const discountRaw = toNumber(item["Discount %"]);
   const discount = discountRaw.toLocaleString('en-US', { maximumFractionDigits: 0 });
-  const imageUrl = `https://filedn.eu/lOjLpzJofleJiC3OIhcsQL0/ERPThumbnails/${item["Item Code"]}.jpg`;
+  const imageUrl = item["Item Code"] ? `https://filedn.eu/lOjLpzJofleJiC3OIhcsQL0/ERPThumbnails/${item["Item Code"]}.jpg` : "";
+  
+  // If imageUrl is empty, skip the image markup
+  const imageMarkup = imageUrl ? `<div class="detail-image"><img src="${imageUrl}" alt="${item["Item Name"]} Thumbnail" /></div>` : "";
   
   detailContainer.innerHTML = `
     <div class="detail-info">
-      <div class="detail-image">
-        <img src="${imageUrl}" alt="${item["Item Name"]} Thumbnail" />
-      </div>
+      ${imageMarkup}
       <div class="detail-text">
         <h2>${item["Item Name"] || ""}</h2>
         <p><strong>Item Code:</strong> ${item["Item Code"] || ""}</p>
         <p><strong>Barcode:</strong> ${item["Barcode"] || ""}</p>
-        <p><strong>Retail Price:</strong> ${retail}</p>
+        <p><strong>Retail:</strong> ${retail}</p>
         <p><strong>Disc :</strong> ${discount}%</p>
-        <p><strong>Net Price:</strong> <span class="net-price">${net}</span></p>
+        <p><strong>Net:</strong> <span class="net-price">${net}</span></p>
       </div>
     </div>
   `;
@@ -167,22 +168,28 @@ function showDetail(item) {
   detailModal.style.display = "flex";
 }
 
+// Close detail modal when clicking the close button...
 closeDetailModal.addEventListener("click", () => {
   detailModal.style.display = "none";
+});
+// ...or anywhere outside the detail-content
+detailModal.addEventListener("click", (e) => {
+  if (e.target === detailModal) {
+    detailModal.style.display = "none";
+  }
 });
 
 /********************************************
  * Quagga2 Barcode Scanner Functionality
  ********************************************/
-// Guard variable to ensure the scanner doesn't auto-start
-let scannerInitialized = false;
+// Ensure scanner does not auto-start on page load
+document.addEventListener("DOMContentLoaded", () => {
+  scannerModal.style.display = "none";
+});
 
 barcodeBtn.addEventListener("click", () => {
-  if (scannerInitialized) return; // Prevent re-initialization if already running
-
-  // Show the scanner modal only when user clicks the button
+  // Show the scanner modal only when the user clicks the button
   scannerModal.style.display = "flex";
-  scannerInitialized = true;
   
   Quagga.init({
     inputStream: {
@@ -195,9 +202,9 @@ barcodeBtn.addEventListener("click", () => {
         height: { min: 720 }
       }
     },
-    frequency: 5,  // Process 3 frames per second
+    frequency: 3,  // Process 3 frames per second
     locate: true,
-    numOfWorkers: 5,
+    numOfWorkers: 4,
     decoder: {
       readers: [
         "code_128_reader",
@@ -213,7 +220,6 @@ barcodeBtn.addEventListener("click", () => {
   }, function(err) {
     if (err) {
       console.error("Quagga init error:", err);
-      scannerInitialized = false;
       return;
     }
     Quagga.start();
@@ -235,5 +241,4 @@ function stopScanner() {
   Quagga.stop();
   Quagga.offDetected(onDetectedHandler);
   scannerModal.style.display = "none";
-  scannerInitialized = false;
 }

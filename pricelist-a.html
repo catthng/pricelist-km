@@ -16,7 +16,7 @@
     </h1>
   </header>
   <main>
-    <!-- Status messages and data information -->
+    <!-- Status messages and data info -->
     <p id="status-message" style="color: green; font-weight: bold;"></p>
     <p id="data-info" style="font-weight: bold; color: #333;"></p>
     
@@ -31,7 +31,7 @@
   </main>
   
   <!-- Scanner Modal (hidden until Scan Barcode is clicked) -->
-  <div id="scanner-modal" class="modal">
+  <div id="scanner-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
       <!-- Quagga2 will render the camera feed here -->
@@ -40,7 +40,7 @@
   </div>
   
   <!-- Detail Modal for search result pop-up -->
-  <div id="detail-modal" class="modal">
+  <div id="detail-modal" class="modal" style="display: none;">
     <div class="modal-content detail-content">
       <span id="close-detail-modal" class="close">&times;</span>
       <div id="detail-container"></div>

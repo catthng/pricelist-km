@@ -112,14 +112,15 @@ button {
   position: relative;
 }
 
+/* Detail modal overlay styling */
 #detail-modal {
   background-color: rgba(0, 0, 0, 0.5);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Arrange detail info as flex row */
+/* Arrange detail info in flex row */
 .detail-info {
   display: flex;
   align-items: center;
