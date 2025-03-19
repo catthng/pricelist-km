@@ -4,34 +4,34 @@
   <meta charset="UTF-8" />
   <!-- Ensure proper scaling on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>KM TOTO 25v6</title>
+  <title>Homeland Toto v7</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header>
-    <!-- Page title with Refresh Database button on the right -->
-    <h1>
-      KM TOTO 25v6
-      <button id="refresh-btn" style="float: right;">Refresh Database</button>
-    </h1>
+    <div class="header-top">
+      <span id="data-info">Items: 0. Updated: --</span>
+      <button id="refresh-btn">Refresh DB</button>
+    </div>
+    <h1>Homeland Toto v7</h1>
   </header>
   <main>
-    <!-- Status messages and data info -->
+    <!-- Status message -->
     <p id="status-message" style="color: green; font-weight: bold;"></p>
-    <p id="data-info" style="font-weight: bold; color: #333;"></p>
     
-    <!-- Search input and Scan Barcode button -->
+    <!-- Search container with clear button -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="Search by code, barcode, or name..." />
+      <button id="clear-search" title="Clear search">x</button>
       <button id="barcode-btn">Scan Barcode</button>
     </div>
     
-    <!-- Results will be displayed here -->
+    <!-- Results area -->
     <div id="results"></div>
   </main>
   
   <!-- Scanner Modal (hidden until Scan Barcode is clicked) -->
-  <div id="scanner-modal" class="modal" style="display: none;">
+  <div id="scanner-modal" class="modal">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
       <!-- Quagga2 will render the camera feed here -->
@@ -40,7 +40,7 @@
   </div>
   
   <!-- Detail Modal for search result pop-up -->
-  <div id="detail-modal" class="modal" style="display: none;">
+  <div id="detail-modal" class="modal">
     <div class="modal-content detail-content">
       <span id="close-detail-modal" class="close">&times;</span>
       <div id="detail-container"></div>
