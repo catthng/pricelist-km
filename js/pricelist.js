@@ -20,7 +20,6 @@ const searchInput = document.getElementById("search-input");
 const resultsDiv = document.getElementById("results");
 const refreshBtn = document.getElementById("refresh-btn");
 const barcodeBtn = document.getElementById("barcode-btn");
-const clearSearchBtn = document.getElementById("clear-search");
 const scannerModal = document.getElementById("scanner-modal");
 const closeModal = document.getElementById("close-modal");
 
@@ -38,7 +37,6 @@ let lastUpdated = localStorage.getItem("pricelistLastUpdated") || "N/A";
 
 // Update data info with a simpler format: e.g., "Items: 1475. Updated: 3/18/25"
 function updateDataInfo(count, updatedTime) {
-  // Assuming updatedTime is in a format we can shorten; here we simply take the date portion.
   const datePart = new Date(updatedTime).toLocaleDateString();
   dataInfo.textContent = `Items: ${count}. Updated: ${datePart}`;
 }
@@ -87,12 +85,6 @@ function refreshData() {
  ********************************************/
 searchInput.addEventListener("input", (e) => {
   performSearch(e.target.value);
-});
-
-// Clear the search input when the clear button is clicked
-clearSearchBtn.addEventListener("click", () => {
-  searchInput.value = "";
-  performSearch("");
 });
 
 function performSearch(query) {
@@ -158,7 +150,6 @@ function showDetail(item) {
   const discount = discountRaw.toLocaleString('en-US', { maximumFractionDigits: 0 });
   const imageUrl = item["Item Code"] ? `https://filedn.eu/lOjLpzJofleJiC3OIhcsQL0/ERPThumbnails/${item["Item Code"]}.jpg` : "";
   
-  // If imageUrl is not empty, add image markup; otherwise, leave blank
   const imageMarkup = imageUrl ? `<div class="detail-image"><img src="${imageUrl}" alt="${item["Item Name"]} Thumbnail" /></div>` : "";
   
   detailContainer.innerHTML = `
@@ -178,11 +169,9 @@ function showDetail(item) {
   detailModal.style.display = "flex";
 }
 
-// Close detail modal when clicking the close button...
 closeDetailModal.addEventListener("click", () => {
   detailModal.style.display = "none";
 });
-// ...or when clicking anywhere outside the detail-content
 detailModal.addEventListener("click", (e) => {
   if (e.target === detailModal) {
     detailModal.style.display = "none";
@@ -249,6 +238,4 @@ closeModal.addEventListener("click", stopScanner);
 
 function stopScanner() {
   Quagga.stop();
-  Quagga.offDetected(onDetectedHandler);
-  scannerModal.style.display = "none";
-}
+  Quagga.offDetected(onDetecte
