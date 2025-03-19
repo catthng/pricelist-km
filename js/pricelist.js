@@ -35,7 +35,8 @@ let pricelistData = JSON.parse(localStorage.getItem("pricelistData") || "[]");
 let dataCount = localStorage.getItem("pricelistDataCount") || 0;
 let lastUpdated = localStorage.getItem("pricelistLastUpdated") || "N/A";
 
-// Update data info with a simpler format: e.g., "Items: 1475. Updated: 3/18/25"
+
+
 function updateDataInfo(count, updatedTime) {
   const datePart = new Date(updatedTime).toLocaleDateString();
   dataInfo.textContent = `Items: ${count}. Updated: ${datePart}`;
@@ -150,6 +151,7 @@ function showDetail(item) {
   const discount = discountRaw.toLocaleString('en-US', { maximumFractionDigits: 0 });
   const imageUrl = item["Item Code"] ? `https://filedn.eu/lOjLpzJofleJiC3OIhcsQL0/ERPThumbnails/${item["Item Code"]}.jpg` : "";
   
+  // If imageUrl is empty, skip the image markup
   const imageMarkup = imageUrl ? `<div class="detail-image"><img src="${imageUrl}" alt="${item["Item Name"]} Thumbnail" /></div>` : "";
   
   detailContainer.innerHTML = `
@@ -169,9 +171,11 @@ function showDetail(item) {
   detailModal.style.display = "flex";
 }
 
+// Close detail modal when clicking the close button...
 closeDetailModal.addEventListener("click", () => {
   detailModal.style.display = "none";
 });
+// ...or anywhere outside the detail-content
 detailModal.addEventListener("click", (e) => {
   if (e.target === detailModal) {
     detailModal.style.display = "none";
@@ -238,4 +242,6 @@ closeModal.addEventListener("click", stopScanner);
 
 function stopScanner() {
   Quagga.stop();
-  Quagga.offDetected(onDetecte
+  Quagga.offDetected(onDetectedHandler);
+  scannerModal.style.display = "none";
+}
