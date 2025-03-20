@@ -18,12 +18,15 @@ header {
   font-size: 0.8em; /* Smaller text for info */
   color: #333;
   margin-bottom: 5px;
+  background-color: #f3f1ee;  /* Warm pastel grey */
+  padding: 5px 10px;
+  border-radius: 4px;
 }
 
 header h1 {
   text-align: center;
-  font-size: 1.6em; /* Approximately 20% smaller than default h1 */
-  margin: 0;
+  font-size: 1.6em; /* Approximately 20% smaller than a default h1 */
+  margin: 10px 0 0 0;
 }
 
 /* Smaller refresh button */
@@ -42,13 +45,13 @@ header h1 {
 .search-container input {
   flex: 1;
   padding: 10px;
-  font-size: 1rem;
+  font-size: 0.85rem;  /* 15% smaller than 1rem */
 }
 
 .search-container button {
   margin-left: 10px;
-  padding: 8px 12px;
-  font-size: 1rem;
+  padding: 6px 10px;
+  font-size: 0.85rem;
 }
 
 /* Results styling */

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <!-- Ensure proper scaling on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>KM Toto v10</title>
+  <title>KM Toto v11</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -13,7 +13,7 @@
       <span id="data-info">Items: 0. Updated: --</span>
       <button id="refresh-btn">Refresh DB</button>
     </div>
-    <h1>KM Toto v10</h1>
+    <h1>KM Toto v11</h1>
   </header>
   <main>
     <!-- Status message -->
@@ -22,15 +22,15 @@
     <!-- Search container -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="Search by code, barcode, or name..." />
-      <button id="barcode-btn">Scan Barcode</button>
+      <button id="barcode-btn">Scan</button>
     </div>
     
     <!-- Results area -->
     <div id="results"></div>
   </main>
   
-  <!-- Scanner Modal (hidden until Scan Barcode is clicked) -->
-  <div id="scanner-modal" class="modal">
+  <!-- Scanner Modal (hidden until "Scan" is clicked) -->
+  <div id="scanner-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
       <!-- ZXing will render the video feed here -->
@@ -38,8 +38,8 @@
     </div>
   </div>
   
-  <!-- Detail Modal for search result pop-up -->
-  <div id="detail-modal" class="modal">
+  <!-- Detail Modal for search result pop-up (hidden by default) -->
+  <div id="detail-modal" class="modal" style="display: none;">
     <div class="modal-content detail-content">
       <span id="close-detail-modal" class="close">&times;</span>
       <div id="detail-container"></div>

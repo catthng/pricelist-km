@@ -131,9 +131,11 @@ function renderResults(results) {
     div.appendChild(row2);
     div.appendChild(row3);
     
-    // When a result is clicked, show the detail pop-up
+    // When a result is clicked, show the detail pop-up if the item is valid
     div.addEventListener("click", () => {
-      showDetail(item);
+      if (item["Item Name"] && item["Item Name"].trim() !== "") {
+        showDetail(item);
+      }
     });
     
     resultsDiv.appendChild(div);
@@ -144,6 +146,9 @@ function renderResults(results) {
  * Detail Modal Functionality
  ********************************************/
 function showDetail(item) {
+  // Do not show pop-up if no valid item data exists
+  if (!item["Item Name"] || item["Item Name"].trim() === "") return;
+  
   const retail = formatNumber(item["Retail Price"]);
   const net = formatNumber(item["Net Price"]);
   const discountRaw = toNumber(item["Discount %"]);
@@ -181,7 +186,7 @@ detailModal.addEventListener("click", (e) => {
 /********************************************
  * ZXing Barcode Scanner Functionality
  ********************************************/
-let codeReader; // Global instance of ZXing code reader
+let codeReader; // Global ZXing reader instance
 
 // Ensure the scanner modal is hidden on page load
 document.addEventListener("DOMContentLoaded", () => {
@@ -189,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 barcodeBtn.addEventListener("click", () => {
-  // Show the scanner modal only when the user clicks the button
+  // Show the scanner modal when the user clicks the "Scan" button
   scannerModal.style.display = "flex";
   
   // Initialize the ZXing reader
