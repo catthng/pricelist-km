@@ -200,8 +200,18 @@ barcodeBtn.addEventListener("click", () => {
   // Initialize the ZXing reader
   codeReader = new ZXing.BrowserMultiFormatReader();
   console.log("ZXing code reader initialized");
-  
-  // Start decoding from the default video device; the video element id is "scanner-video"
+
+  // Define video constraints: 1080p resolution, 3x zoom, and continuous autofocus.
+  const videoConstraints = {
+    width: { ideal: 1920 },
+    height: { ideal: 1080 },
+    facingMode: "environment",
+    advanced: [
+      { zoom: 3, focusMode: "continuous" }
+    ]
+  };
+
+  // Start decoding from the default video device using our constraints.
   codeReader.decodeFromVideoDevice(null, 'scanner-video', (result, err) => {
     if (result) {
       onDetectedHandler(result.text);
@@ -209,7 +219,7 @@ barcodeBtn.addEventListener("click", () => {
     if (err && !(err instanceof ZXing.NotFoundException)) {
       console.error(err);
     }
-  });
+  }, videoConstraints);
 });
 
 function onDetectedHandler(scannedText) {
