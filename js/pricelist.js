@@ -35,8 +35,7 @@ let pricelistData = JSON.parse(localStorage.getItem("pricelistData") || "[]");
 let dataCount = localStorage.getItem("pricelistDataCount") || 0;
 let lastUpdated = localStorage.getItem("pricelistLastUpdated") || "N/A";
 
-
-
+// Update data info with a simpler format: e.g., "Items: 1475. Updated: 3/18/25"
 function updateDataInfo(count, updatedTime) {
   const datePart = new Date(updatedTime).toLocaleDateString();
   dataInfo.textContent = `Items: ${count}. Updated: ${datePart}`;
@@ -151,7 +150,6 @@ function showDetail(item) {
   const discount = discountRaw.toLocaleString('en-US', { maximumFractionDigits: 0 });
   const imageUrl = item["Item Code"] ? `https://filedn.eu/lOjLpzJofleJiC3OIhcsQL0/ERPThumbnails/${item["Item Code"]}.jpg` : "";
   
-  // If imageUrl is empty, skip the image markup
   const imageMarkup = imageUrl ? `<div class="detail-image"><img src="${imageUrl}" alt="${item["Item Name"]} Thumbnail" /></div>` : "";
   
   detailContainer.innerHTML = `
@@ -171,11 +169,9 @@ function showDetail(item) {
   detailModal.style.display = "flex";
 }
 
-// Close detail modal when clicking the close button...
 closeDetailModal.addEventListener("click", () => {
   detailModal.style.display = "none";
 });
-// ...or anywhere outside the detail-content
 detailModal.addEventListener("click", (e) => {
   if (e.target === detailModal) {
     detailModal.style.display = "none";
@@ -183,9 +179,11 @@ detailModal.addEventListener("click", (e) => {
 });
 
 /********************************************
- * Quagga2 Barcode Scanner Functionality
+ * ZXing Barcode Scanner Functionality
  ********************************************/
-// Ensure scanner does not auto-start on page load
+let codeReader; // Global instance of ZXing code reader
+
+// Ensure the scanner modal is hidden on page load
 document.addEventListener("DOMContentLoaded", () => {
   scannerModal.style.display = "none";
 });
@@ -194,54 +192,33 @@ barcodeBtn.addEventListener("click", () => {
   // Show the scanner modal only when the user clicks the button
   scannerModal.style.display = "flex";
   
-  Quagga.init({
-    inputStream: {
-      name: "Live",
-      type: "LiveStream",
-      target: document.querySelector("#scanner-container"),
-      constraints: {
-        facingMode: "environment",
-        width: { min: 1280 },
-        height: { min: 720 }
-      }
-    },
-    frequency: 3,  // Process 3 frames per second
-    locate: true,
-    numOfWorkers: 4,
-    decoder: {
-      readers: [
-        "code_128_reader",
-        "ean_reader",
-        "ean_8_reader",
-        "upc_reader",
-        "upc_e_reader",
-        "code_39_reader",
-        "codabar_reader",
-        "i2of5_reader"
-      ]
-    }
-  }, function(err) {
-    if (err) {
-      console.error("Quagga init error:", err);
-      return;
-    }
-    Quagga.start();
-  });
+  // Initialize the ZXing reader
+  codeReader = new ZXing.BrowserMultiFormatReader();
+  console.log("ZXing code reader initialized");
   
-  Quagga.onDetected(onDetectedHandler);
+  // Start decoding from the default video device; the video element id is "scanner-video"
+  codeReader.decodeFromVideoDevice(null, 'scanner-video', (result, err) => {
+    if (result) {
+      onDetectedHandler(result.text);
+    }
+    if (err && !(err instanceof ZXing.NotFoundException)) {
+      console.error(err);
+    }
+  });
 });
 
-function onDetectedHandler(data) {
-  const scannedCode = data.codeResult.code;
+function onDetectedHandler(scannedText) {
   stopScanner();
-  searchInput.value = scannedCode;
-  performSearch(scannedCode);
+  searchInput.value = scannedText;
+  performSearch(scannedText);
 }
 
 closeModal.addEventListener("click", stopScanner);
 
 function stopScanner() {
-  Quagga.stop();
-  Quagga.offDetected(onDetectedHandler);
+  if (codeReader) {
+    codeReader.reset();
+    codeReader = null;
+  }
   scannerModal.style.display = "none";
 }

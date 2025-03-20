@@ -2,18 +2,34 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 16px;
+  padding: 20px;
 }
 
-header, main {
+header {
   max-width: 800px;
   margin: auto;
 }
 
-button {
-  padding: 10px 15px;
-  margin: 5px;
-  cursor: pointer;
+/* Header top bar with data info and refresh button */
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8em; /* Smaller text for info */
+  color: #333;
+  margin-bottom: 5px;
+}
+
+header h1 {
+  text-align: center;
+  font-size: 1.6em; /* Approximately 20% smaller than default h1 */
+  margin: 0;
+}
+
+/* Smaller refresh button */
+#refresh-btn {
+  font-size: 0.8em;
+  padding: 5px 10px;
 }
 
 /* Search container styling */
@@ -31,6 +47,8 @@ button {
 
 .search-container button {
   margin-left: 10px;
+  padding: 8px 12px;
+  font-size: 1rem;
 }
 
 /* Results styling */
@@ -84,15 +102,8 @@ button {
   z-index: 10000;
 }
 
-/* Scanner container takes full modal space */
-#scanner-container {
-  width: 100%;
-  height: 100%;
-  background: #000;
-}
-
-/* Force Quagga2's video element to fill container and show centered middle area */
-#scanner-container video {
+/* Scanner modal video styling */
+#scanner-video {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover;
