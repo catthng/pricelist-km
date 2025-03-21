@@ -81,18 +81,16 @@ function refreshData() {
 }
 
 /********************************************
- * Search Functionality
+ * Search Functionality with Auto-clear Timer
  ********************************************/
-// When the user types, perform the search
+let clearTimer;
 searchInput.addEventListener("input", (e) => {
   performSearch(e.target.value);
-});
-
-// Additionally, if the user presses Enter (as from a Bluetooth scanner), clear previous results first.
-searchInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    resultsDiv.innerHTML = "";
-  }
+  // Reset the auto-clear timer on every input
+  if (clearTimer) clearTimeout(clearTimer);
+  clearTimer = setTimeout(() => {
+    searchInput.value = "";
+  }, 2000);
 });
 
 function performSearch(query) {
