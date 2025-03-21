@@ -83,8 +83,16 @@ function refreshData() {
 /********************************************
  * Search Functionality
  ********************************************/
+// When the user types, perform the search
 searchInput.addEventListener("input", (e) => {
   performSearch(e.target.value);
+});
+
+// Additionally, if the user presses Enter (as from a Bluetooth scanner), clear previous results first.
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    resultsDiv.innerHTML = "";
+  }
 });
 
 function performSearch(query) {
@@ -197,10 +205,6 @@ barcodeBtn.addEventListener("click", () => {
   // Show the scanner modal when the user clicks the "Scan" button
   scannerModal.style.display = "flex";
   
-  // Initialize the ZXing reader
-  codeReader = new ZXing.BrowserMultiFormatReader();
-  console.log("ZXing code reader initialized");
-
   // Define video constraints: 1080p resolution, 3x zoom, and continuous autofocus.
   const videoConstraints = {
     width: { ideal: 1920 },
@@ -211,6 +215,10 @@ barcodeBtn.addEventListener("click", () => {
     ]
   };
 
+  // Initialize the ZXing reader
+  codeReader = new ZXing.BrowserMultiFormatReader();
+  console.log("ZXing code reader initialized");
+  
   // Start decoding from the default video device using our constraints.
   codeReader.decodeFromVideoDevice(null, 'scanner-video', (result, err) => {
     if (result) {
